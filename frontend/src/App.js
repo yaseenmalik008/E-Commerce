@@ -4,6 +4,7 @@ import Footer from './Components/Footer'
 import Header from "./Components/Header"
 import HomeScreen from './screen/HomeScreen'
 import {Flex} from "@chakra-ui/react"
+import ProductScreen from './screen/ProductScreen'
 
 
 const App = () => {
@@ -21,6 +22,7 @@ const App = () => {
 
    <Routes>
     <Route  path = "/" element ={<HomeScreen/>}/>
+    <Route path = "/product/:id" element= {<ProductScreen/>}/>
    </Routes>
     </Flex>
     <Footer/>
