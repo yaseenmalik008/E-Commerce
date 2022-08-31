@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import {Link as RouterLink} from "react-router-dom"
 import { Flex, Heading, Link, Box, Icon } from "@chakra-ui/react";
 import {BsCartPlus,BsFillPersonFill} from "react-icons/bs"
 import {HiMenu} from "react-icons/hi"
@@ -26,7 +27,7 @@ const Header = () => {
         size="md"
         letterSpacing="md"
       >
-        <Link href="/" _hover={{color :"teal.500", textDecor : "none"}}>M&N Store</Link>
+        <Link as ={RouterLink} to="/" _hover={{color :"teal.500", textDecor : "none"}}>M&N Store</Link>
       </Heading>
       <Box display={{base : "block",md :"none"}} onClick ={()=>setShow(!show)}>
         <Icon as={HiMenu} color = "white"  w = "4" h="4" />
@@ -34,8 +35,8 @@ const Header = () => {
 
       <Box display={{base: show ? "block" : "none", md: "flex"}} width = {{base:"full",md : "auto"}}
       mt ={{base:"3", md : "0"}}>
-        <Link
-        href="/cart"
+        <Link as= {RouterLink}
+        to="/cart"
         fontSize="sm"
         letterSpacing="wide"
         color = "white"
@@ -49,8 +50,8 @@ const Header = () => {
         >
         <Icon as={BsCartPlus}  w = "4" h="4" mr = "1" />
         Cart</Link>
-        <Link
-        href="/login"
+        <Link as={RouterLink}
+        to="/login"
         fontSize="sm"
         letterSpacing="wide"
         color = "white"

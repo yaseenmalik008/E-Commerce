@@ -10,7 +10,7 @@ const HomeScreen = () => {
     Latest Product
 </Heading>
 
-<Grid templateColumns='1fr 1fr 1fr 1fr' gap='8'>
+<Grid templateColumns={{sm:'1fr',md:'1fr 1fr', lg:'1fr 1fr 1fr', xl:'1fr 1fr 1fr 1fr' }} gap='8'>
 {products.map((prod)=>(
     <Product product ={prod}/>
 ))}
