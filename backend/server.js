@@ -19,7 +19,7 @@ app.get('/api/products/:id', (req, res) => {
   res.json(product);
 });
 
-const PORT = process.env>PORT || 5000;
+const PORT = process.env.PORT || 5000;
 
 app.listen(process.env.PORT, () => {
   console.log('Server running on port 5000');
