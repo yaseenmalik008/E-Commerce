@@ -39,7 +39,7 @@ const productSchema = mongoose.Schema(
             type  :String,
             required : true,
         },
-        brand {
+        brand :{
             type : String,
             required  : true,
         },
@@ -70,7 +70,7 @@ const productSchema = mongoose.Schema(
             required : true,
             default : 0,
         },
-        reviews = [reviewSchema]
+        reviews : [reviewSchema]
     }
 )
 
