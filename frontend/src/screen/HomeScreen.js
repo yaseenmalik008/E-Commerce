@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { Heading, Grid } from "@chakra-ui/react";
 import Product from "../Components/Product";
 import { listProducts } from "../actions/productActions";
+import Loader from "../Components/Loader";
+import Message from "../Components/Message";
 const HomeScreen = () => {
   const dispatch = useDispatch();
 
@@ -20,9 +22,9 @@ const HomeScreen = () => {
       </Heading>
 
       {loading ? (
-        <p>Loading...</p>
+        <Loader/>
       ) : error ? (
-        <p>{error}</p>
+        <Message type="error">{error}</Message>
       ) : (
         <Grid
           templateColumns={{
