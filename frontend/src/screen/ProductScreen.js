@@ -31,6 +31,7 @@ const ProductScreen = () => {
       ) : error ? (
         <Message type= 'error'>{error}</Message>
       ) : (
+
       <Grid templateColumns='5fr 4fr 3fr' gap='10'>
         {/* Column 1 */}
         <Image src={product.image} alt={product.name} borderRadius='md' />
@@ -84,7 +85,6 @@ const ProductScreen = () => {
           </Button>
         </Flex>
       </Grid>
-
       )}
 
     </>
