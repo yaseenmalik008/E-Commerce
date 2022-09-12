@@ -87,12 +87,12 @@ const ProductScreen = () => {
   onChange={(e)=>setQty(e.target.value)}
   width= "30%"
   >
-{[...Array(product.countInStock).keys()].map((i)=>{
+{[...Array(product.countInStock).keys()].map((i)=>(
   <option key={i+1} value = {i+1}
   >
     {i+1}
   </option>
-})}
+))}
 
   </Select>
 

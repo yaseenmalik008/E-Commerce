@@ -11,7 +11,7 @@ export const addToCart = (qty,id)=> async (dispatch,getState)=>{
             image : data.image,
             price : data.price,
             countInStock : data.countInStock,
-            qty,
+            qty : +qty,
         }
     })
 
