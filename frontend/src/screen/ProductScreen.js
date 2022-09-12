@@ -1,15 +1,18 @@
 import {useDispatch,useSelector} from 'react-redux'
 import Loader from '../Components/Loader'
 import Message from '../Components/Message'
-import { useEffect } from 'react';
-import { Link as RouterLink, useParams } from 'react-router-dom';
-import { Flex, Grid, Image, Heading, Text, Button } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
+import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
+import { Flex, Grid, Image, Heading, Text, Button,Select } from '@chakra-ui/react';
 import Rating from '../Components/Rating';
 import { listProductDetails } from '../actions/productActions';
 
 const ProductScreen = () => {
   const dispatch = useDispatch()
   const { id } = useParams();
+  const navigate = useNavigate()
+
+  const [qty,setQty] = useState(1)
 
   const productDetails = useSelector((state)=>state.productDetails)
   const {loading,error,product} = productDetails
@@ -18,6 +21,9 @@ const ProductScreen = () => {
    dispatch(listProductDetails(id))
   }, [id,dispatch]);
 
+  const addToCartHandler = ()=>{
+    navigate(`/cart/${id}?qty=${qty}`)
+  }
   return (
     <>
       <Flex mb='5'>
@@ -73,6 +79,27 @@ const ProductScreen = () => {
             </Text>
           </Flex>
 
+{product.countInStock > 0 &&(
+  <Flex justifyContent="space-between" py="2">
+  <Text>Qty:</Text>
+  <Select 
+  value={qty}
+  onChange={(e)=>setQty(e.target.value)}
+  width= "30%"
+  >
+{[...Array(product.countInStock).keys()].map((i)=>{
+  <option key={i+1} value = {i+1}
+  >
+    {i+1}
+  </option>
+})}
+
+  </Select>
+
+  </Flex>
+)}
+
+
           <Button
             bgColor='gray.800'
             textTransform='uppercase'
@@ -80,6 +107,7 @@ const ProductScreen = () => {
             colorScheme='teal'
             my='2'
             disabled={product.countInStock === 0}
+            onClick = {addToCartHandler}
           >
             Add To Cart
           </Button>
