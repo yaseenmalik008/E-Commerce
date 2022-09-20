@@ -7,31 +7,31 @@ import {
 } from "../constants/userConstants";
 
 export const login = (email, password) => async (dispatch) => {
-  try {
-    dispatch({ USER_LOGIN_REQUEST });
+	try {
+		dispatch({ type: USER_LOGIN_REQUEST });
 
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
+		const config = {
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		};
 
-    const { data } = await axios.post(
-      "/api/users/login",
-      { email, password },
-      config
-    );
+		const { data } = await axios.post(
+			'/api/users/login',
+			{ email, password },
+			config
+		);
 
-    dispatch({ USER_LOGIN_SUCCESS, payload: data });
+		dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
 
-    localStorage.setItem("userInfo", JSON.stringify(data));
-  } catch (err) {
-    dispatch({
-      type: USER_LOGIN_FAIL,
-      payload:
-        err.response && err.response.data.message
-          ? err.response.data.message
-          : err.message,
-    });
-  }
+		localStorage.setItem('userInfo', JSON.stringify(data));
+	} catch (err) {
+		dispatch({
+			type: USER_LOGIN_FAIL,
+			payload:
+				err.response && err.response.data.message
+					? err.response.data.message
+					: err.message,
+		});
+	}
 };

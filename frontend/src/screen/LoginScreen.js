@@ -32,6 +32,7 @@ const LoginScreen = () => {
 
   const userLogin = useSelector((state) => state.userLogin);
   const { loading, error, userInfo } = userLogin;
+  console.log(loading);
 
   useEffect(() => {
     if (userInfo) {
@@ -53,7 +54,7 @@ const LoginScreen = () => {
 
         {error && <Message type="error">{error}</Message>}
 
-        <from onSubmit={submitHandler}>
+        <form onSubmit={submitHandler}>
           <FormControl id="email">
             <FormLabel htmlFor="email">Email Address</FormLabel>
             <Input
@@ -81,10 +82,10 @@ const LoginScreen = () => {
           <Button type="submit" colorScheme="teal" mt=" 4" isLoading={loading}>
             Login
           </Button>
-        </from>
+        </form>
         <Flex pt="10">
           <Text fontweigth="semibold">
-            New Customer ?{" "}
+            New Customer ?
             <Link as={RouterLink} to="/register">
               Click Here To Register
             </Link>
