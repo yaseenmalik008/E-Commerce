@@ -1,11 +1,25 @@
 import React, { useState } from "react";
-import {Link as RouterLink} from "react-router-dom"
-import { Flex, Heading, Link, Box, Icon } from "@chakra-ui/react";
+import {Link as RouterLink,useNavigate} from "react-router-dom"
+import { Flex, Heading, Link, Box,Button, Icon,MenuButton,Menu,MenuList,MenuItem } from "@chakra-ui/react";
 import {BsCartPlus,BsFillPersonFill} from "react-icons/bs"
 import {HiMenu} from "react-icons/hi"
+import {useDispatch,useSelector} from 'react-redux'
+import { logout } from "../actions/userAction";
+import { IoChevronDown } from 'react-icons/io5';
+
 
 const Header = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
     const [show ,setShow] = useState(false)
+
+    const userLogin = useSelector(state => state.userLogin)
+    const {userInfo} = userLogin
+
+    const  logoutHandler = ()=>{
+      dispatch((logout()))
+      navigate('/')
+    }
   return (
     <Flex
       as="header"
@@ -50,7 +64,23 @@ const Header = () => {
         >
         <Icon as={BsCartPlus}  w = "4" h="4" mr = "1" />
         Cart</Link>
-        <Link as={RouterLink}
+
+        {userInfo ? (
+          <Menu>
+            <MenuButton as={Button} rightIcon={<IoChevronDown />} _hover = {{textdecor:'none' ,opacity : '0.7'}}>
+              {userInfo.name}
+            </MenuButton>
+            <MenuList>
+              <MenuItem as = {RouterLink} to= "/profile">
+                Profile
+              </MenuItem>
+              <MenuItem onClick={logoutHandler}>
+              Logout
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        ) : (
+          <Link as={RouterLink}
         to="/login"
         fontSize="sm"
         letterSpacing="wide"
@@ -65,6 +95,9 @@ const Header = () => {
         >
            <Icon as={BsFillPersonFill}  w = "4" h="4" mr = "1" />
         Login</Link>
+        )}
+
+     
       </Box>
     </Flex>
   );
