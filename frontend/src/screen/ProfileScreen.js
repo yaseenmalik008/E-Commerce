@@ -13,7 +13,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { getUserDetails } from "../actions/userAction";
+import { getUserDetails, updateUserProfile } from "../actions/userAction";
 import FromContainer from "../Components/FormContainer";
 import Message from "../Components/Message";
 
@@ -32,6 +32,12 @@ const ProfileScreen = () => {
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
+  // console.log(userInfo)
+
+  const userUpdateProfile = useSelector((state)=> state.userUpdateProfile)
+  const {success} = userUpdateProfile
+  
+
 
   useEffect(() => {
     if (!userInfo) {
@@ -44,7 +50,7 @@ const ProfileScreen = () => {
         setEmail(user.email);
       }
     }
-  }, [navigate, userInfo, user, dispatch]);
+  }, [ userInfo,navigate, user, dispatch]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -52,7 +58,7 @@ const ProfileScreen = () => {
     if (password !== confirmPassword) {
       setMessage("Password Do Not Match");
     } else {
-      //DISPATCH UPDATE PROFILE
+      dispatch(updateUserProfile({id : user._id , name,email,password}))
     }
   };
 
@@ -65,6 +71,7 @@ const ProfileScreen = () => {
           </Heading>
           {error && <Message type="error">{error}</Message>}
           {message && <Message type="error">{message}</Message>}
+          {success && <Message type = 'success'>Profile Updated</Message>}
 
           <form onSubmit={submitHandler}>
             <FormControl id="name">
