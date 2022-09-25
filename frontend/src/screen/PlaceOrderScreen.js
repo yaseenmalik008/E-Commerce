@@ -8,8 +8,7 @@ import {
   Link,
   Text,
 } from "@chakra-ui/react";
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import CheckoutStep from "../Components/CheckoutStep";
 import Message from "../Components/Message";
@@ -50,6 +49,17 @@ const PlaceOrderScreen = () => {
               {cart.shippingAddress.postalCode},{cart.shippingAddress.country}
             </Text>
           </Box>
+
+          {/* Payment Method */}
+					<Box borderBottom='1px' py='6' borderColor='gray.300'>
+						<Heading as='h2' mb='3' fontSize='2xl' fontWeight='semibold'>
+							Payment Method
+						</Heading>
+						<Text>
+							<strong>Method: </strong>
+							{cart.paymentMethod.toUpperCase()}
+						</Text>
+					</Box>
 
           {/* order item */}
 
