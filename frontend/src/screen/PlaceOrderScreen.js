@@ -8,12 +8,16 @@ import {
   Link,
   Text,
 } from "@chakra-ui/react";
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { createOrder } from "../actions/orderActions";
 import CheckoutStep from "../Components/CheckoutStep";
 import Message from "../Components/Message";
 
 const PlaceOrderScreen = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const cart = useSelector((state) => state.cart);
 
   cart.itemsPrice = cart.cartItems.reduce(
@@ -23,11 +27,29 @@ const PlaceOrderScreen = () => {
   cart.shippingPrice = cart.itemsPrice < 5000 ? 1000 : 0;
   cart.taxPrice = (18 * cart.itemsPrice) / 100;
   cart.totalPrice = cart.itemsPrice + cart.shippingPrice + cart.taxPrice;
-  
 
-  const placeOrderHandler = () => {
-    console.log("palce order");
-  };
+  const orderCreate = useSelector((state) => state.orderCreate);
+	const { order, success, error } = orderCreate;
+
+	const placeOrderHandler = () => {
+		dispatch(
+			createOrder({
+				orderItems: cart.cartItems,
+				shippingAddress: cart.shippingAddress,
+				paymentMethod: cart.paymentMethod,
+				itemsPrice: cart.itemsPrice,
+				taxPrice: cart.taxPrice,
+				totalPrice: cart.totalPrice,
+				shippingPrice: cart.shippingPrice,
+			})
+		);
+	};
+
+  useEffect(()=>{
+    if(success){
+      navigate(`/order/${order._id}`)
+    }
+  },[success,navigate,order])
 
   return (
     <Flex w="full" direction="column" py="5">
@@ -51,15 +73,15 @@ const PlaceOrderScreen = () => {
           </Box>
 
           {/* Payment Method */}
-					<Box borderBottom='1px' py='6' borderColor='gray.300'>
-						<Heading as='h2' mb='3' fontSize='2xl' fontWeight='semibold'>
-							Payment Method
-						</Heading>
-						<Text>
-							<strong>Method: </strong>
-							{cart.paymentMethod.toUpperCase()}
-						</Text>
-					</Box>
+          <Box borderBottom="1px" py="6" borderColor="gray.300">
+            <Heading as="h2" mb="3" fontSize="2xl" fontWeight="semibold">
+              Payment Method
+            </Heading>
+            <Text>
+              <strong>Method: </strong>
+              {cart.paymentMethod}
+            </Text>
+          </Box>
 
           {/* order item */}
 
@@ -143,54 +165,56 @@ const PlaceOrderScreen = () => {
             {/* Shipping Price */}
 
             <Flex
-            borderBottom='1px'
-            py = '2'
-            borderColor='gray.200'
-            alignItems='center'
-            justifyContent='space-between'
+              borderBottom="1px"
+              py="2"
+              borderColor="gray.200"
+              alignItems="center"
+              justifyContent="space-between"
             >
-            <Text fontSize='xl'>Shipping</Text>
-            <Text fontSize='xl' fontWeight='bold'
-            >₹{cart.shippingPrice}</Text>
-
+              <Text fontSize="xl">Shipping</Text>
+              <Text fontSize="xl" fontWeight="bold">
+                ₹{cart.shippingPrice}
+              </Text>
             </Flex>
 
             {/* Tax price  */}
 
             <Flex
-            borderBottom='1px'
-            py = '2'
-            borderColor='gray.200'
-            alignItems ='center'
-            justifyContent ='space-between'
+              borderBottom="1px"
+              py="2"
+              borderColor="gray.200"
+              alignItems="center"
+              justifyContent="space-between"
             >
-            <Text fontSize='xl'>Tax</Text>
-            <Text fontSize='xl' fontWeight='bold'
-            >₹{cart.taxPrice}</Text>
+              <Text fontSize="xl">Tax</Text>
+              <Text fontSize="xl" fontWeight="bold">
+                ₹{cart.taxPrice}
+              </Text>
             </Flex>
 
             {/* Total Price */}
             <Flex
-            borderBottom='1px'
-            py=  '2'
-            borderColor='gray.200'
-            alignItems ='center'
-            justifyContent ='space-between'
+              borderBottom="1px"
+              py="2"
+              borderColor="gray.200"
+              alignItems="center"
+              justifyContent="space-between"
             >
-            <Text fontSize='xl'>Total</Text>
-            <Text fontSize='xl' fontWeight='bold'>₹{cart.totalPrice}</Text>
-
+              <Text fontSize="xl">Total</Text>
+              <Text fontSize="xl" fontWeight="bold">
+                ₹{cart.totalPrice}
+              </Text>
             </Flex>
           </Box>
 
           <Button
-          size ='lg'
-          textTransform='uppercase'
-          colorScheme='yellow'
-          type ='button'
-          w ='full'
-          onClick ={placeOrderHandler}
-          disabled ={cart.cartItems===0}
+            size="lg"
+            textTransform="uppercase"
+            colorScheme="yellow"
+            type="button"
+            w="full"
+            onClick={placeOrderHandler}
+            disabled={cart.cartItems === 0}
           >
             Place Order
           </Button>
