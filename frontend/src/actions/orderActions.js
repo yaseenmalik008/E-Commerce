@@ -54,7 +54,7 @@ Authorization : `Bearer ${userInfo.token}`
 
 		const {data} = await axios.get(`/api/orders/${id}` , config)
 
-		dispatch ({type : ORDER_CREATE_SUCCESS , payload : data})
+		dispatch ({type : ORDER_DETAILS_SUCCESS , payload : data})
 		
 	} catch (err) {
 		dispatch({
