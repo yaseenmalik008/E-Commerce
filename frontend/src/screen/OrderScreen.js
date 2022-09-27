@@ -27,8 +27,8 @@ const OrderScreen = () => {
   const orderDetails = useSelector((state) => state.orderDetails);
   const { order, loading, error } = orderDetails;
 
-  if (!loading) {
-    order.itemsPrice = order.orderItems.reduuce(
+ if (!loading) {
+    order.itemsPrice = order.orderItems.reduce(
       (acc, currVal) => acc + currVal.price * currVal.qty,
       0
     );
@@ -40,6 +40,8 @@ const OrderScreen = () => {
 
   return loading ? (
     <Loader />
+  ) : error ?(
+<Message type ='error'>{error}</Message>
   ) : (
     <>
       <Flex w="full" py="5" direction="column">
@@ -165,7 +167,7 @@ const OrderScreen = () => {
                 py="2"
                 borderColor="gray.200"
                 alignItems="center"
-                justtifyContent="space-between"
+                justifyContent="space-between"
               >
                 <Text fontSize="xl">Shipping</Text>
                 <Text fontWeight="bold" fontSize="xl">
@@ -182,7 +184,7 @@ const OrderScreen = () => {
                 justifyContent="space-between"
               >
                 <Text fontSize="xl">Tax Prcie</Text>
-                <Text fontweight="bold" fontSize="xl">
+                <Text fontWeight="bold" fontSize="xl">
                   ₹{order.taxPrice}
                 </Text>
               </Flex>
