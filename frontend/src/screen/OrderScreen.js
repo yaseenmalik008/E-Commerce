@@ -16,8 +16,11 @@ import {
   useSearchParams,
   useParams,
 } from "react-router-dom";
-import { getOrderDetails } from "../actions/orderActions";
+import { getOrderDetails,payOrder } from "../actions/orderActions";
+import {PayPalButtons,PayPalScriptProvider} from "@paypal/react-paypal-js"
 import Loader from "../Components/Loader";
+import { ORDER_PAY_RESET } from "../constants/orderConstants";
+
 import Message from "../Components/Message";
 
 const OrderScreen = () => {
@@ -27,6 +30,9 @@ const OrderScreen = () => {
   const orderDetails = useSelector((state) => state.orderDetails);
   const { order, loading, error } = orderDetails;
 
+  const orderPay = useSelector((state)=>state.orderPay)
+  const {loading : loadingPay, success : successPay} = orderPay
+
  if (!loading) {
     order.itemsPrice = order.orderItems.reduce(
       (acc, currVal) => acc + currVal.price * currVal.qty,
@@ -35,8 +41,17 @@ const OrderScreen = () => {
   }
 
   useEffect(() => {
-    dispatch(getOrderDetails(orderId));
-  }, [dispatch, orderId]);
+    dispatch({type : ORDER_PAY_RESET})
+
+    if(!order || successPay){
+dispatch({type : ORDER_PAY_RESET})
+      dispatch(getOrderDetails(orderId));
+    }
+  }, [dispatch, orderId,order,successPay]);
+
+  const successPaymentHandler = (paymentResult) =>{
+    dispatch(payOrder(orderId,paymentResult))
+  }
 
   return loading ? (
     <Loader />
@@ -89,6 +104,11 @@ const OrderScreen = () => {
                 <strong>Method:</strong>
                 {order.paymentMethod.toUpperCase()}
               </Text>
+                {order.isPaid ? (
+                  <Message type ='success'>Paid on {order.paidAt.split('T')[0]}</Message>
+                ):(
+                  <Message type ="warning">Not Paid</Message>
+                )}
             </Box>
 
             {/* Order Items  */}
@@ -202,7 +222,46 @@ const OrderScreen = () => {
                 </Text>
               </Flex>
             </Box>
-            {/* Payment Button */}
+            {/* PAYMENT BUTTON */}
+            {!order.isPaid && (
+              <Box>
+                {loadingPay ? (
+                  <Loader />
+                ) : (
+                  <PayPalScriptProvider
+                    options={{
+                      'client-id':
+                        'AUez7rOtHqw0x1r1HibslhPfdAf-u665G7vhlBS_Rwu-R6tNkygRklwX75yRWUGcFnPzu5TLq1wP5nPL',
+                      components: 'buttons',
+                    }}>
+                    <PayPalButtons
+                      createOrder={(_, actions) => {
+                        return actions.order.create({
+                          purchase_units: [
+                            {
+                              amount: {
+                                value: order.totalPrice,
+                              },
+                            },
+                          ],
+                        });
+                      }}
+                      onApprove={(_, actions) => {
+                        return actions.order.capture().then((details) => {
+                          const paymentResult = {
+                            id: details.id,
+                            status: details.status,
+                            update_time: details.update_time,
+                            email_address: details.email_address,
+                          };
+                          successPaymentHandler(paymentResult);
+                        });
+                      }}
+                    />
+                  </PayPalScriptProvider>
+                )}
+              </Box>
+            )}
           </Flex>
         </Grid>
       </Flex>
