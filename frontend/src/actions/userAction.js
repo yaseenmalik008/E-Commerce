@@ -58,6 +58,7 @@ export const logout = () => async (dispatch) => {
   dispatch({ type: USER_DETAILS_RESET });
   dispatch({ type: ORDER_MY_LIST_RESET });
   dispatch({ type: USER_UPDATE_PROFILE_RESET });
+  dispatch({ type: USER_LIST_RESET });
 };
 
 export const register = (name, email, password) => async (dispatch) => {
@@ -148,32 +149,30 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
   }
 };
 
-export const listUsers = () =>async(dispatch,getState)=>{
+export const listUsers = () => async (dispatch, getState) => {
   try {
-    dispatch({type : USER_LIST_REQUEST})
+    dispatch({ type: USER_LIST_REQUEST });
 
     const {
-      userLogin : {userInfo}
-    } = getState()
+      userLogin: { userInfo },
+    } = getState();
 
     const config = {
-      headers : {
-        Authorization : `Bearer ${userInfo.token}`
-      }
-    }
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-    const {data} = await axios.get('/api/users',config)
+    const { data } = await axios.get("/api/users", config);
 
-    dispatch ({type : USER_LIST_SUCCESS,payload : data})
-    
+    dispatch({ type: USER_LIST_SUCCESS, payload: data });
   } catch (err) {
     dispatch({
-      type : USER_LIST_FAIL,
-      payload : 
-      err.response && err.response.data.message 
-      ? err.response.data.message
-      :err.message
-    })
-    
+      type: USER_LIST_FAIL,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
   }
-}
+};
