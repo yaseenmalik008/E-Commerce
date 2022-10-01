@@ -20,7 +20,7 @@ import {
 } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import { listUsers } from "../actions/userAction";
+import { listUsers,deleteUser } from "../actions/userAction";
 import Message from "../Components/Message";
 import Loader from "../Components/Loader";
 
@@ -34,16 +34,21 @@ const UserListScreen = () => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
+  const userDelete = useSelector((state)=>state.userDelete)
+  const {success : successDelete} = userDelete
+
   useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
       dispatch(listUsers());
     } else {
       navigate("/login");
     }
-  }, [dispatch, navigate, userInfo]);
+  }, [dispatch, navigate, userInfo,successDelete]);
 
-  const deleteHandler = () => {
-    console.log("DELETE");
+  const deleteHandler = (id) => {
+    if(window.confirm('Are You Sure')){
+      dispatch(deleteUser(id))
+    }
   };
 
   return (
