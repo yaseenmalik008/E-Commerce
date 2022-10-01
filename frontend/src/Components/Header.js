@@ -1,25 +1,35 @@
 import React, { useState } from "react";
-import {Link as RouterLink,useNavigate} from "react-router-dom"
-import { Flex, Heading, Link, Box,Button, Icon,MenuButton,Menu,MenuList,MenuItem } from "@chakra-ui/react";
-import {BsCartPlus,BsFillPersonFill} from "react-icons/bs"
-import {HiMenu} from "react-icons/hi"
-import {useDispatch,useSelector} from 'react-redux'
+import { Link as RouterLink, useNavigate } from "react-router-dom";
+import {
+  Flex,
+  Heading,
+  Link,
+  Box,
+  Button,
+  Icon,
+  MenuButton,
+  Menu,
+  MenuList,
+  MenuItem,
+} from "@chakra-ui/react";
+import { BsCartPlus, BsFillPersonFill } from "react-icons/bs";
+import { HiMenu } from "react-icons/hi";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../actions/userAction";
-import { IoChevronDown } from 'react-icons/io5';
-
+import { IoChevronDown } from "react-icons/io5";
 
 const Header = () => {
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-    const [show ,setShow] = useState(false)
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [show, setShow] = useState(false);
 
-    const userLogin = useSelector(state => state.userLogin)
-    const {userInfo} = userLogin
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
-    const  logoutHandler = ()=>{
-      dispatch((logout()))
-      navigate('/')
-    }
+  const logoutHandler = () => {
+    dispatch(logout());
+    navigate("/");
+  };
   return (
     <Flex
       as="header"
@@ -41,63 +51,106 @@ const Header = () => {
         size="md"
         letterSpacing="md"
       >
-        <Link as ={RouterLink} to="/" _hover={{color :"teal.500", textDecor : "none"}}>M&N Store</Link>
+        <Link
+          as={RouterLink}
+          to="/"
+          _hover={{ color: "teal.500", textDecor: "none" }}
+        >
+          M&N Store
+        </Link>
       </Heading>
-      <Box display={{base : "block",md :"none"}} onClick ={()=>setShow(!show)}>
-        <Icon as={HiMenu} color = "white"  w = "4" h="4" />
+      <Box
+        display={{ base: "block", md: "none" }}
+        onClick={() => setShow(!show)}
+      >
+        <Icon as={HiMenu} color="white" w="4" h="4" />
       </Box>
 
-      <Box display={{base: show ? "block" : "none", md: "flex"}} width = {{base:"full",md : "auto"}}
-      mt ={{base:"3", md : "0"}}>
-        <Link as= {RouterLink}
-        to="/cart"
-        fontSize="sm"
-        letterSpacing="wide"
-        color = "white"
-        textTransform="uppercase"
-        mr = "5"
-        display ="flex"
+      <Box
+        display={{ base: show ? "block" : "none", md: "flex" }}
+        width={{ base: "full", md: "auto" }}
+        mt={{ base: "3", md: "0" }}
         alignItems="center"
-        fontWeight="bold"
-        _hover = {{color : "teal.500"}}
-
+      >
+        <Link
+          as={RouterLink}
+          to="/cart"
+          fontSize="sm"
+          letterSpacing="wide"
+          color="white"
+          textTransform="uppercase"
+          mr="5"
+          display="flex"
+          alignItems="center"
+          fontWeight="bold"
+          _hover={{ color: "teal.500" }}
         >
-        <Icon as={BsCartPlus}  w = "4" h="4" mr = "1" />
-        Cart</Link>
-
+          <Icon as={BsCartPlus} w="4" h="4" mr="1" />
+          Cart
+        </Link>
+        {/* User Menu */}
         {userInfo ? (
           <Menu>
-            <MenuButton as={Button} rightIcon={<IoChevronDown />} _hover = {{textdecor:'none' ,opacity : '0.7'}}>
+            <MenuButton
+              as={Button}
+              rightIcon={<IoChevronDown />}
+              _hover={{ textdecor: "none", opacity: "0.7" }}
+            >
               {userInfo.name}
             </MenuButton>
             <MenuList>
-              <MenuItem as = {RouterLink} to= "/profile">
+              <MenuItem as={RouterLink} to="/profile">
                 Profile
               </MenuItem>
-              <MenuItem onClick={logoutHandler}>
-              Logout
-              </MenuItem>
+              <MenuItem onClick={logoutHandler}>Logout</MenuItem>
             </MenuList>
           </Menu>
         ) : (
-          <Link as={RouterLink}
-        to="/login"
-        fontSize="sm"
-        letterSpacing="wide"
-        color = "white"
-        textTransform="uppercase"
-        mr = "5"
-        display ="flex"
-        alignItems="center"
-        fontWeight="bold"
-        _hover = {{color : "teal.500"}}
-
-        >
-           <Icon as={BsFillPersonFill}  w = "4" h="4" mr = "1" />
-        Login</Link>
+          <Link
+            as={RouterLink}
+            to="/login"
+            fontSize="sm"
+            letterSpacing="wide"
+            color="white"
+            textTransform="uppercase"
+            mr="5"
+            display="flex"
+            alignItems="center"
+            fontWeight="bold"
+            _hover={{ color: "teal.500" }}
+          >
+            <Icon as={BsFillPersonFill} w="4" h="4" mr="1" />
+            Login
+          </Link>
         )}
 
-     
+        {/* Admin Menu  */}
+        {userInfo && userInfo.isAdmin && (
+          <Menu>
+            <MenuButton
+              ml="5"
+              color="white"
+              fontSize="sm"
+              fontWeight="semibold"
+              as={Link}
+              textTransform="uppercase"
+              _hover={{ textDecoration: "none", opacity: "0.7" }}
+            >
+              Manage <Icon as={IoChevronDown} />
+            </MenuButton>
+            <MenuList>
+              <MenuItem as={RouterLink} to="/admin/userList">
+                All Users
+              </MenuItem>
+              <MenuItem as={RouterLink} to="/admin/productlist">
+                All Products
+              </MenuItem>
+              <MenuItem as={RouterLink} to="/admin/orderlist">
+                All Orders
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        )}
       </Box>
     </Flex>
   );
