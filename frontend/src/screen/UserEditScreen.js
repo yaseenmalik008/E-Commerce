@@ -67,11 +67,11 @@ const UserEditScreen = () => {
           <Heading as="h1" mb="8" fontSize="3xl">
             Edit User
           </Heading>
-        </FormContainer>
+        
         {loadingUpdate && <Loader />}
         {errorUpdate && <Message type="error">{errorUpdate}</Message>}
 
-        {laoding ? (
+        {loading ? (
           <Loader />
         ) : error ? (
           <Message type="error">{error}</Message>
@@ -120,6 +120,7 @@ const UserEditScreen = () => {
             </Button>
           </from>
         )}
+        </FormContainer>
       </Flex>
     </>
   );
