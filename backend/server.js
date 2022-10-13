@@ -7,6 +7,7 @@ import {notFound,errorHandler} from "./middlewares/errorMiddlewares.js"
 import userRoutes from './routes/userRoutes.js'
 import orderRoutes from './routes/orderRoutes.js'
 import uploadRoutes from './routes/uploadRoutes.js'
+import path from 'path'
 
 dotenv.config();
 connectDB()
@@ -23,9 +24,13 @@ app.use('/api/users',userRoutes)
 app.use('/api/orders',orderRoutes)
 app.use('/api/uploads',uploadRoutes)
 
-// Error MiddleWares
-app.use(notFound)
-app.use(errorHandler)
+// Create a static folder
+const __dirname = path.resolve();
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+
+// Error Middlewares
+app.use(notFound);
+app.use(errorHandler);
 
 
 const PORT = process.env.PORT || 5000;
