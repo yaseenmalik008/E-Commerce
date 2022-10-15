@@ -82,7 +82,7 @@ const OrderListScreen = () => {
                   </Td>
                   <Td>
                     {order.isDelivered ? (
-                      order.isDelivered.substring(0, 10)
+                      order.deliveredAt.substring(0, 10)
                     ) : (
                       <Icon
                         as={IoCloseCircleSharp}

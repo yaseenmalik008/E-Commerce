@@ -5,22 +5,23 @@ import {
   Heading,
   Image,
   Link,
-  Select,
   Text,
+  Button,
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Link as RouterLink, useParams } from "react-router-dom";
 import {
-  Link as RouterLink,
-  useNavigate,
-  useSearchParams,
-  useParams,
-} from "react-router-dom";
-import { getOrderDetails,payOrder } from "../actions/orderActions";
-import {PayPalButtons,PayPalScriptProvider} from "@paypal/react-paypal-js"
+  getOrderDetails,
+  payOrder,
+  deliverOrder,
+} from "../actions/orderActions";
+import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 import Loader from "../Components/Loader";
-import { ORDER_PAY_RESET } from "../constants/orderConstants";
-
+import {
+  ORDER_PAY_RESET,
+  ORDER_DELIVER_RESET,
+} from "../constants/orderConstants";
 import Message from "../Components/Message";
 
 const OrderScreen = () => {
@@ -30,10 +31,16 @@ const OrderScreen = () => {
   const orderDetails = useSelector((state) => state.orderDetails);
   const { order, loading, error } = orderDetails;
 
-  const orderPay = useSelector((state)=>state.orderPay)
-  const {loading : loadingPay, success : successPay} = orderPay
+  const orderPay = useSelector((state) => state.orderPay);
+  const { loading: loadingPay, success: successPay } = orderPay;
 
- if (!loading) {
+  const orderDeliver = useSelector((state) => state.orderDeliver);
+  const { loading: loadingDeliver, success: successDeliver } = orderDeliver;
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
+  if (!loading) {
     order.itemsPrice = order.orderItems.reduce(
       (acc, currVal) => acc + currVal.price * currVal.qty,
       0
@@ -41,22 +48,25 @@ const OrderScreen = () => {
   }
 
   useEffect(() => {
-    dispatch({type : ORDER_PAY_RESET})
+    dispatch({ type: ORDER_PAY_RESET });
+    dispatch({ type: ORDER_DELIVER_RESET });
 
-    if(!order || successPay){
-dispatch({type : ORDER_PAY_RESET})
+    if (!order || successPay) {
+      dispatch({ type: ORDER_PAY_RESET });
+      dispatch({type :  ORDER_DELIVER_RESET });
       dispatch(getOrderDetails(orderId));
     }
-  }, [dispatch, orderId,order,successPay]);
+  }, [dispatch, orderId, order, successPay, successDeliver]);
 
-  const successPaymentHandler = (paymentResult) =>{
-    dispatch(payOrder(orderId,paymentResult))
-  }
+  const successPaymentHandler = (paymentResult) => {
+    dispatch(payOrder(orderId, paymentResult));
+  };
 
+  const deliverHandler = () => dispatch(deliverOrder(order));
   return loading ? (
     <Loader />
-  ) : error ?(
-<Message type ='error'>{error}</Message>
+  ) : error ? (
+    <Message type="error">{error}</Message>
   ) : (
     <>
       <Flex w="full" py="5" direction="column">
@@ -104,11 +114,13 @@ dispatch({type : ORDER_PAY_RESET})
                 <strong>Method:</strong>
                 {order.paymentMethod.toUpperCase()}
               </Text>
-                {order.isPaid ? (
-                  <Message type ='success'>Paid on {order.paidAt.split('T')[0]}</Message>
-                ):(
-                  <Message type ="warning">Not Paid</Message>
-                )}
+              {order.isPaid ? (
+                <Message type="success">
+                  Paid on {order.paidAt.split("T")[0]}
+                </Message>
+              ) : (
+                <Message type="warning">Not Paid</Message>
+              )}
             </Box>
 
             {/* Order Items  */}
@@ -117,36 +129,42 @@ dispatch({type : ORDER_PAY_RESET})
               <Heading as="h2" mb="3" fontSize="2xl" fontWeight="semibold">
                 Order Items
               </Heading>
-              <Box py="2">
-                {order.orderItems.map((item, idx) => (
-                  <Flex
-                    key={idx}
-                    alignItems="center"
-                    justifyContent="space-between"
-                  >
-                    <Flex py="2" alignItems="center">
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        w="12"
-                        h="12"
-                        objectFit="cover"
-                        mr="6"
-                      />
-                      <Link
-                        fontWeight="bold"
-                        fontSize="xl"
-                        as={RouterLink}
-                        to={`/products/${item.product}`}
+              <Box>
+                {order.orderItems.length === 0 ? (
+                  <Message>No Order Info</Message>
+                ) : (
+                  <Box py="2">
+                    {order.orderItems.map((item, idx) => (
+                      <Flex
+                        key={idx}
+                        alignItems="center"
+                        justifyContent="space-between"
                       >
-                        {item.name}
-                      </Link>
-                    </Flex>
-                    <Text fontSize="lg" fontWeight="semibold">
-                      {item.qty} x ₹{item.price} = ₹{+item.qty * item.price}
-                    </Text>
-                  </Flex>
-                ))}
+                        <Flex py="2" alignItems="center">
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            w="12"
+                            h="12"
+                            objectFit="cover"
+                            mr="6"
+                          />
+                          <Link
+                            fontWeight="bold"
+                            fontSize="xl"
+                            as={RouterLink}
+                            to={`/products/${item.product}`}
+                          >
+                            {item.name}
+                          </Link>
+                        </Flex>
+                        <Text fontSize="lg" fontWeight="semibold">
+                          {item.qty} x ₹{item.price} = ₹{+item.qty * item.price}
+                        </Text>
+                      </Flex>
+                    ))}
+                  </Box>
+                )}
               </Box>
             </Box>
           </Flex>
@@ -230,10 +248,11 @@ dispatch({type : ORDER_PAY_RESET})
                 ) : (
                   <PayPalScriptProvider
                     options={{
-                      'client-id':
-                        'AUez7rOtHqw0x1r1HibslhPfdAf-u665G7vhlBS_Rwu-R6tNkygRklwX75yRWUGcFnPzu5TLq1wP5nPL',
-                      components: 'buttons',
-                    }}>
+                      "client-id":
+                        "AUez7rOtHqw0x1r1HibslhPfdAf-u665G7vhlBS_Rwu-R6tNkygRklwX75yRWUGcFnPzu5TLq1wP5nPL",
+                      components: "buttons",
+                    }}
+                  >
                     <PayPalButtons
                       createOrder={(_, actions) => {
                         return actions.order.create({
@@ -262,6 +281,21 @@ dispatch({type : ORDER_PAY_RESET})
                 )}
               </Box>
             )}
+
+            {/* Order Delivered Button  */}
+            {loadingDeliver && <Loader />}
+            {order.isPaid &&
+              userInfo &&
+              userInfo.isAdmin &&
+              !order.isDelivered && (
+                <Button
+                 type='button'
+									colorScheme='teal'
+									onClick={deliverHandler}
+                >
+                  Mark As Delivered
+                </Button>
+              )}
           </Flex>
         </Grid>
       </Flex>

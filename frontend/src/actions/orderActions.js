@@ -13,7 +13,11 @@ import {
   ORDER_MY_LIST_REQUEST,
   ORDER_MY_LIST_SUCCESS,
   ORDER_LIST_FAIL,
-  ORDER_LIST_REQUEST,ORDER_LIST_SUCCESS,
+  ORDER_LIST_REQUEST,
+  ORDER_LIST_SUCCESS,
+  ORDER_DELIVER_FAIL,
+  ORDER_DELIVER_REQUEST,
+  ORDER_DELIVER_SUCCESS,
 } from "../constants/orderConstants";
 
 export const createOrder = (order) => async (dispatch, getState) => {
@@ -135,32 +139,63 @@ export const listMyOrders = () => async (dispatch, getState) => {
   }
 };
 
-export const listOrders = () => async(dispatch,getState)=>{
+export const listOrders = () => async (dispatch, getState) => {
   try {
-    dispatch({type : ORDER_LIST_REQUEST})
+    dispatch({ type: ORDER_LIST_REQUEST });
 
     const {
-      userLogin :{userInfo}
-    } = getState()
+      userLogin: { userInfo },
+    } = getState();
 
     const config = {
-      headers : {
-        Authorization : `Bearer ${userInfo.token}`
-      }
-    }
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
 
-    const {data} = await axios.get('/api/orders',config)
+    const { data } = await axios.get("/api/orders", config);
 
-    dispatch({type : ORDER_LIST_SUCCESS,payload: data})
-    
+    dispatch({ type: ORDER_LIST_SUCCESS, payload: data });
   } catch (err) {
     dispatch({
       type: ORDER_LIST_FAIL,
-      payload : 
-      err.response && err.response.data.message 
-      ? err.response.data.message
-      :err.message
-    })
-    
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
   }
-}
+};
+
+export const deliverOrder = (order) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: ORDER_DELIVER_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    const { data } = await axios.put(
+      `/api/orders/${order._id}/deliver`,
+      order,
+      config
+    );
+
+    dispatch({ type: ORDER_DELIVER_SUCCESS, payload: data });
+  } catch (err) {
+    dispatch({
+      type: ORDER_DELIVER_FAIL,
+      payload:
+        err.response && err.response.data.message
+          ? err.response.data.message
+          : err.message,
+    });
+  }
+};
