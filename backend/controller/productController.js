@@ -87,5 +87,41 @@ console.log(req.body)
 		throw new Error('Product Not Found')
 	}
 })
+// @desc    Create new review
+// @route   POST /api/products/:id/reviews
+// @access  private
 
-export { getProductById, getProducts, deleteProduct,createProduct,updateProduct };
+const createProductReview = asyncHandler(async(req,res)=>{
+  const{rating ,comment} = req.body
+  const product = await Product.findById(req,params.id)
+
+  if(product){
+    const alreadyReviews = product.reviews.find(
+      (review)=>req.user.toString()===req.user.id.toString
+    )
+    if(alreadyReviews){
+      res.status(404)
+      throw new Error('Product Already Reviewed')
+    }
+
+    const review = {
+      name : req.user.name,
+      rating : +rating,
+      comment,
+      user : req.user._id
+
+    }
+    product.reviews.push(review)
+    product.numReviews = product.reviews.length
+
+    product.rating = 
+    product.reduce((acc,currVal) =>currVal.rating+acc,0)/product.reviews.length
+    await product.save()
+    res.status(201).json({message : 'Review Added'})
+  }else{
+res.status(404)
+throw new Error('Product Not Found')
+  }
+})
+
+export { getProductById, getProducts, deleteProduct,createProduct,updateProduct,createProductReview };
