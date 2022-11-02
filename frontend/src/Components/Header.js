@@ -17,6 +17,7 @@ import { HiMenu } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../actions/userAction";
 import { IoChevronDown } from "react-icons/io5";
+import { updateUserProfile } from "../actions/userAction";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -25,6 +26,13 @@ const Header = () => {
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
+  const  userDetails  = useSelector((state) => state.userDetails)
+  const { user } = userDetails
+  
+  if (user.name) {
+    userInfo.name = user.name
+  }
+  
 
   const logoutHandler = () => {
     dispatch(logout());

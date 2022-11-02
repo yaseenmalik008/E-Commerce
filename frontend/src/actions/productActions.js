@@ -27,7 +27,7 @@ export const listProducts = () => async (dispatch) => {
 
     dispatch({ type: PRODUCT_LIST_SUCCESS, payload: data });
   } catch (err) {
-    // console.log(err);
+    
     dispatch({
       type: PRODUCT_LIST_FAIL,
       payload:
@@ -149,7 +149,7 @@ export const updateProduct = (product) => async (dispatch, getState) => {
 export const createProductReview  = (productId,review)=>async(dispatch,getState)=>{
   try {
     dispatch({type : PRODUCT_REVIEW_CREATE_REQUEST})
-    console.log(productId)
+   
     const {
       userLogin : {userInfo}
     } = getState()
@@ -163,7 +163,7 @@ export const createProductReview  = (productId,review)=>async(dispatch,getState)
     }
 
     const {data} = await axios.post(`/api/products/${productId}/reviews`,review,config)
-    console.log(data)
+   
 
     dispatch({type : PRODUCT_REVIEW_CREATE_SUCCESS,payload:data})
     

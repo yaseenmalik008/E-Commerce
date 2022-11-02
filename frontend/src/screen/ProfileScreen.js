@@ -26,6 +26,7 @@ import Message from "../Components/Message";
 import { listMyOrders } from "../actions/orderActions";
 import Loader from "../Components/Loader";
 import { IoWarning } from "react-icons/io5";
+import { USER_DETAILS_RESET } from "../constants/userConstants";
 
 const ProfileScreen = () => {
   const dispatch = useDispatch();
@@ -70,6 +71,7 @@ const ProfileScreen = () => {
       setMessage("Password Do Not Match");
     } else {
       dispatch(updateUserProfile({ id: user._id, name, email, password }));
+      dispatch({type : USER_DETAILS_RESET})
     }
   };
 
@@ -179,7 +181,7 @@ const ProfileScreen = () => {
                   </Td>
                   <Td>
                     {order.isDelivered ? (
-                      order.isDelivered.substring(0, 10)
+                      order.deliveredAt.substring(0, 10)
                     ) : (
                       <Icon as={IoWarning} color="red" />
                     )}
