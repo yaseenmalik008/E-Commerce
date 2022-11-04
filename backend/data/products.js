@@ -17,7 +17,7 @@ const products = [
     description:
       "Etiam cursus condimentum vulputate. Nulla nisi orci, vulputate at dolor et, malesuada ultrices nisi. Ut varius ex ut purus porttitor, a facilisis orci condimentum. Nullam in elit et sapien ornare pellentesque at ac lorem.",
     brand: "Urban Outfitters",
-    category: "Men Fashion",
+    category: "men",
     price: 8500,
     countInStock: 42,
     rating: 4.4,
@@ -29,7 +29,7 @@ const products = [
     description:
       "Etiam cursus condimentum vulputate. Nulla nisi orci, vulputate at dolor et, malesuada ultrices nisi. Ut varius ex ut purus porttitor, a facilisis orci condimentum. Nullam in elit et sapien ornare pellentesque at ac lorem.",
     brand: "Ralph Lauren",
-    category: "Men Fashion",
+    category: "men",
     price: 6000,
     countInStock: 18,
     rating: 4.5,
@@ -65,7 +65,7 @@ const products = [
     description:
       "Etiam cursus condimentum vulputate. Nulla nisi orci, vulputate at dolor et, malesuada ultrices nisi. Ut varius ex ut purus porttitor, a facilisis orci condimentum. Nullam in elit et sapien ornare pellentesque at ac lorem.",
     brand: "Tom Ford",
-    category: "Men Fashion",
+    category: "men",
     price: 16000,
     countInStock: 21,
     rating: 4.1,
@@ -77,7 +77,7 @@ const products = [
     description:
       "Etiam cursus condimentum vulputate. Nulla nisi orci, vulputate at dolor et, malesuada ultrices nisi. Ut varius ex ut purus porttitor, a facilisis orci condimentum. Nullam in elit et sapien ornare pellentesque at ac lorem.",
     brand: "Calvin Klein",
-    category: "Men Fashion",
+    category: "men",
     price: 7500,
     countInStock: 25,
     rating: 3.4,
